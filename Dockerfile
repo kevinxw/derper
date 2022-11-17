@@ -4,14 +4,15 @@ WORKDIR /app
 # https://tailscale.com/kb/1118/custom-derp-servers/
 RUN go install tailscale.com/cmd/derper@main
 
-FROM ubuntu
+FROM debian:bullseye-slim
 WORKDIR /app
 
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends apt-utils && \
-    apt-get install -y ca-certificates && \
+    apt-get install -y --no-install-recommends --no-install-suggests \
+        ca-certificates \
+    && rm -rf /var/lib/apt/lists/* /var/log/* \
     mkdir /app/certs
 
 ENV DERP_DOMAIN your-hostname.com
